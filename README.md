@@ -1,4 +1,4 @@
-CubeHelix
+<b>CubeHelix</b>
 
 This script is a Javascript plugin for PixInsight.  It is an adaptation of the cubehelix pseudo
 colour mapping scheme developed by Dave Green of the University of Cambridge.  The colour scheme 
