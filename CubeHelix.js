@@ -77,10 +77,6 @@ function CubeHelixColourData()
         P.executeOn(this.preview.mainView);
         this.preview.mainView.endProcess();
 
-        var v = View.viewById("CubeHelix");
-        if (v != null)
-            delete v;
-        
         var angle = 2 * Math.PI * (this.startColour / 3.0 + 1 + this.rotations*this.rotdir);
 
         var P = new PixelMath;
