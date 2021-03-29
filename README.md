@@ -11,3 +11,8 @@ This script is a Javascript plugin for PixInsight.  It is an adaptation of the c
 Pseudocolour mapping is a technique frequently used in medical imaging and scientific applications where intensity (or brightness of pixels) in a typically monochrome image is mapped to arbitrarily assigned colours to enhance the visualisation of variations in intensity.  The cubehelix algorithm is illustrated with the following image (borrowed from Dave Greens' website at http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/) where the intensity values are represented by the diagonal of the cube and the mapped red, gren and blue components are calculated based on the helix surrounding the diagonal.  The number of rotations of the helix, the direction of rotation, the starting colour determine the mapped colour, while the saturation parameter determines the distance of the helix from the diagonal and therefore the degree of saturation.
 
 ![cubehelix colour scheme](/img/cubehelix.png)
+
+An example is given with the following images which are a hyydrogen-alpha image of the Helix Nebula (NGC 7293) before and after application of the plugin.
+
+![Ha image](/img/Helix_Ha.png "Hydrogen-alpha")
+![Cubehelix image](/img/CubeHelix.png "Cubehelix")
