@@ -5,4 +5,4 @@ This script is a Javascript plugin for PixInsight.  It is an adaptation of the c
 (https://astron-soc.in/bulletin/11June/289392011.pdf)
 
 ### Installation ###
- To install, copy CubeHelix.js into the src/scripts directory of the Pixinsight installation directory.  Select the "Script > Feature Scripts..." menu option and then click the "Regenerate" button.  If you don't want to include the script in the PixInsight installation directory then select the "Script > Execute Script File..." menu option and navigate to the location of the CubeHelix script.
+ To install, copy CubeHelix.js into the src/scripts directory of the Pixinsight installation directory.  Select the "Script > Feature Scripts..." menu option, click the "Add" button then select the CubeHelix script. If you don't want to include the script in the PixInsight installation then select the "Script > Execute Script File..." menu option and navigate to the location of the CubeHelix script.
