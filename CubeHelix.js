@@ -56,6 +56,12 @@ function CubeHelixColourData()
     this.preview.show();
 
     this.updateImage = function() {
+        if (this.sourceView.image.colorSpace != ColorSpace_Gray) {
+            var msgBox = new MessageBox("Source image must be monochrome.", "CubeHelix Error", StdIcon_Error, StdButton_Ok);
+            msgBox.execute();
+            return;
+        }
+
         console.show();
         console.writeln("Executing CubeHelix with");
         console.writeln("  Start colour ", format("%1.2f", this.startColour));
