@@ -1,5 +1,5 @@
 /*
- * PseudoColour.js
+ * CubeHelix.js
  * 
  * Display monochrome image as pseudo colour with 
  * windowing of colour range.
