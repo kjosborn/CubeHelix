@@ -14,6 +14,7 @@
                 (https://astron-soc.in/bulletin/11June/289392011.pdf). 
 
 #include <pjsr/Sizer.jsh>
+#include <pjsr/NumericControl.jsh>
 #include <pjsr/TextAlign.jsh>
 #include <pjsr/UndoFlag.jsh>
 #include <pjsr/FrameStyle.jsh>
