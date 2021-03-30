@@ -40,7 +40,7 @@ function CubeHelixColourData()
 
     this.sourceView = ImageWindow.activeWindow.mainView;
     if (this.sourceView.isNull) {
-        var msg = new MessageBox("Source image view must be selected", StdIcon_Error, StdButton_ok);
+        var msg = new MessageBox("Source image view must be selected", StdIcon_Error, StdButton_Ok);
         console.hide();
         msg.execute();
         throw new Error("Source image must be selected.");
