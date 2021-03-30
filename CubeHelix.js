@@ -19,7 +19,7 @@
 #include <pjsr/StdButton.jsh>
 #include <pjsr/ColorSpace.jsh>
 
-#define VERSION "0.9a"
+#define VERSION "1.0"
 #define CMAP_WIDTH 550
 #define CMAP_HEIGHT 50
 #define RED 1
