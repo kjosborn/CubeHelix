@@ -3,6 +3,8 @@
  * 
  * Display monochrome image as pseudo colour with 
  * windowing of colour range.
+ * 
+ * (C) Kevin Osborn 2021
  */
 
  #feature-id    Utilities > CubeHelix
@@ -32,7 +34,7 @@ function CubeHelixColourData()
 {
     this.startColour = 0.0;
     this.rotations = 0.0;
-    this.hue = 0.0;
+    this.saturation = 0.0;
     this.gamma = 0.0;
     this.rotdir = 1;
     this.colourScale = null;
@@ -40,7 +42,7 @@ function CubeHelixColourData()
 
     this.sourceView = ImageWindow.activeWindow.mainView;
     if (this.sourceView.isNull) {
-        var msg = new MessageBox("Source image view must be selected", StdIcon_Error, StdButton_Ok);
+        var msg = new MessageBox("Source image view must be selected", StdIcon_Error, StdButton_ok);
         console.hide();
         msg.execute();
         throw new Error("Source image must be selected.");
@@ -66,7 +68,7 @@ function CubeHelixColourData()
         console.writeln("Executing CubeHelix with");
         console.writeln("  Start colour ", format("%1.2f", this.startColour));
         console.writeln("  Rotations    ", format("%1.2f", this.rotations));
-        console.writeln("  Hue          ", format("%1.2f", this.hue));
+        console.writeln("  Saturation   ", format("%1.2f", this.saturation));
         console.writeln("  Gamma        ", format("%1.2f", this.gamma));
         console.writeln("  Rotation dir ", format("%d", this.rotdir));
 
@@ -86,9 +88,9 @@ function CubeHelixColourData()
         var angle = 2 * Math.PI * (this.startColour / 3.0 + 1 + this.rotations*this.rotdir);
 
         var P = new PixelMath;
-        P.expression = "$T^" + this.gamma + " + (" + this.hue + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (-0.14861 * cos(" + angle + " * $T) + 1.78277 * sin(" + angle + " * $T))";
-        P.expression1 = "$T^" + this.gamma + " + (" + this.hue + " * $T^" + this.gamma + " * (1 - $T) / 2.0)  * (-0.29227 * cos(" + angle + " * $T) + 0.90649 * sin(" + angle + " * $T))";
-        P.expression2 = "$T^" + this.gamma + " + (" + this.hue + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (1.97294 * cos(" + angle + " * $T))";
+        P.expression = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (-0.14861 * cos(" + angle + " * $T) + 1.78277 * sin(" + angle + " * $T))";
+        P.expression1 = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0)  * (-0.29227 * cos(" + angle + " * $T) + 0.90649 * sin(" + angle + " * $T))";
+        P.expression2 = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (1.97294 * cos(" + angle + " * $T))";
         P.expression3 = "";
         P.useSingleExpression = false;
         P.symbols = "";
@@ -118,10 +120,10 @@ function CubeHelixColourData()
         console.hide();
     }
 
-    this.cubeHelix = function(fract, start, rotns, hue, gamma, irgb) {
+    this.cubeHelix = function(fract, start, rotns, saturation, gamma, irgb) {
         var angle = 2 * Math.PI * (start / 3.0 + 1 + rotns * fract);
         var f = Math.pow(fract, gamma);
-        var amp = hue * f * (1 - fract) / 2.0;
+        var amp = saturation * f * (1 - fract) / 2.0;
 
         switch (irgb) {
             case RED:
@@ -152,7 +154,7 @@ function MyDialog()
         // data.preview.forceClose();
     }
 
-    var sliderMinWidth = Math.round(this.font.width("Number of Rotations:") + 2.0 * this.font.width('M'));
+    var sliderMinWidth = Math.round(this.font.width("Saturation parameter:") + 2.0 * this.font.width('M'));
 
     this.titleLabel = new Label(this);
     this.titleLabel.frameStyle = FrameStyle_Box;
@@ -218,19 +220,19 @@ function MyDialog()
     }
     data.rotations = this.rotations.value;
 
-    this.hueParam = new NumericControl(this);
-    this.hueParam.label.text = "Hue parameter:";
-    this.hueParam.label.minWidth = sliderMinWidth;
-    this.hueParam.slider.setRange(0, 200);
-    this.hueParam.slider.minWidth = 256;
-    this.hueParam.setRange(0.0, 2.0);
-    this.hueParam.setPrecision(2);
-    this.hueParam.setValue(1.0);
-    this.hueParam.onValueUpdated = function(value) {
+    this.saturationParam = new NumericControl(this);
+    this.saturationParam.label.text = "Saturation parameter:";
+    this.saturationParam.label.minWidth = sliderMinWidth;
+    this.saturationParam.slider.setRange(0, 200);
+    this.saturationParam.slider.minWidth = 256;
+    this.saturationParam.setRange(0.0, 2.0);
+    this.saturationParam.setPrecision(2);
+    this.saturationParam.setValue(1.0);
+    this.saturationParam.onValueUpdated = function(value) {
         //data.updataParams(value);
-        data.hue = value;
+        data.saturation = value;
     }
-    data.hue = this.hueParam.value;
+    data.saturation = this.saturationParam.value;
 
     this.gammaParam = new NumericControl(this);
     this.gammaParam.label.text = "Gamma parameter:";
@@ -279,9 +281,9 @@ function MyDialog()
         var gfx = new Graphics(this);
         for (var i = 0; i < CMAP_WIDTH; i++) {
             var fract = i/(CMAP_WIDTH-1);
-            var r = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.hue, data.gamma, RED);
-            var g = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.hue, data.gamma, GREEN);
-            var b = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.hue, data.gamma, BLUE);
+            var r = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.saturation, data.gamma, RED);
+            var g = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.saturation, data.gamma, GREEN);
+            var b = data.cubeHelix(fract, data.startColour, data.rotations*data.rotdir, data.saturation, data.gamma, BLUE);
             var red = Math.max(Math.min(Math.floor(255*r), 255), 0);
             var green = Math.max(Math.min(Math.floor(255*g), 255), 0);
             var blue = Math.max(Math.min(Math.floor(255*b), 255), 0);
@@ -295,7 +297,7 @@ function MyDialog()
 
     this.controlSizer.add(this.startColour);
     this.controlSizer.add(this.rotations);
-    this.controlSizer.add(this.hueParam);
+    this.controlSizer.add(this.saturationParam);
     this.controlSizer.add(this.gammaParam);
     this.controlSizer.add(this.directionSizer);
     this.controlSizer.add(this.previewColourMap);
