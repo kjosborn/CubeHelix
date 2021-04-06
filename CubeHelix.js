@@ -22,14 +22,12 @@
 #include <pjsr/StdButton.jsh>
 #include <pjsr/ColorSpace.jsh>
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 #define CMAP_WIDTH 550
 #define CMAP_HEIGHT 50
 #define RED 1
 #define GREEN 2
 #define BLUE 3
-
-// #define PREVIEW_SIZE 400
 
 function CubeHelixColourData() {
     this.startColour = 0.0;
@@ -39,23 +37,6 @@ function CubeHelixColourData() {
     this.rotdir = 1;
     this.colourScale = null;
     this.sourceView = null;
-
-    // this.sourceView = ImageWindow.activeWindow.mainView;
-    // if (this.sourceView.isNull) {
-    //     var msg = new MessageBox("Source image view must be selected", "CubeHelix Error", StdIcon_Error, StdButton_Ok);
-    //     console.hide();
-    //     msg.execute();
-    //     throw new Error("Source image must be selected.");
-    // }
-
-    // this.preview = new ImageWindow(this.sourceView.image.width, this.sourceView.image.height,
-    //     3, 32, true, true, "CubeHelix");
-    // this.preview.mainView.beginProcess(UndoFlag_NoSwapFile);
-    // this.preview.mainView.image.fill(0);
-    // this.preview.mainView.endProcess();
-    // this.preview.fitWindow();
-    // this.preview.zoomToOptimalFit();
-    // this.preview.show();
 
     this.initPreview = function (sourceImg) {
         this.sourceView = sourceImg;
@@ -71,6 +52,12 @@ function CubeHelixColourData() {
     }
 
     this.updateImage = function () {
+        if (this.sourceView == null) {
+            var msgBox = new MessageBox("Please select source image.", "CubeHelix Error", StdIcon_Error, StdButton_Ok);
+            msgBox.execute();
+            return;
+        }
+
         if (this.sourceView.image.colorSpace != ColorSpace_Gray) {
             var msgBox = new MessageBox("Source image must be monochrome.", "CubeHelix Error", StdIcon_Error, StdButton_Ok);
             msgBox.execute();
@@ -101,9 +88,9 @@ function CubeHelixColourData() {
         var angle = 2 * Math.PI * (this.startColour / 3.0 + 1 + this.rotations * this.rotdir);
 
         var P = new PixelMath;
-        P.expression = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (-0.14861 * cos(" + angle + " * $T) + 1.78277 * sin(" + angle + " * $T))";
-        P.expression1 = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0)  * (-0.29227 * cos(" + angle + " * $T) + 0.90649 * sin(" + angle + " * $T))";
-        P.expression2 = "$T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (1.97294 * cos(" + angle + " * $T))";
+        P.expression = "max(min($T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (-0.14861 * cos(" + angle + " * $T) + 1.78277 * sin(" + angle + " * $T)), 1.0), 0.0)";
+        P.expression1 = "max(min($T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0)  * (-0.29227 * cos(" + angle + " * $T) + 0.90649 * sin(" + angle + " * $T)), 1.0), 0.0)";
+        P.expression2 = "max(min($T^" + this.gamma + " + (" + this.saturation + " * $T^" + this.gamma + " * (1 - $T) / 2.0) * (1.97294 * cos(" + angle + " * $T)), 1.0), 0.0)";
         P.expression3 = "";
         P.useSingleExpression = false;
         P.symbols = "";
@@ -162,9 +149,9 @@ function MyDialog() {
     this.__base__ = Dialog;
     this.__base__();
 
-    this.onHide = function () {
-        // data.preview.forceClose();
-    }
+    // this.onHide = function () {
+    //     data.preview.forceClose();
+    // }
 
     var sliderMinWidth = Math.round(this.font.width("Saturation parameter:") + 2.0 * this.font.width('M'));
 
@@ -213,7 +200,6 @@ function MyDialog() {
     this.startColour.setValue(0.5);
     this.startColour.toolTip = "Starting colour (1.0 red, 2.0 green, 3.0 blue)."
     this.startColour.onValueUpdated = function (value) {
-        //data.updataParams(value);
         data.startColour = value;
     }
     data.startColour = this.startColour.value;
@@ -227,7 +213,6 @@ function MyDialog() {
     this.rotations.setPrecision(2);
     this.rotations.setValue(1.0);
     this.rotations.onValueUpdated = function (value) {
-        //data.updataParams(value);
         data.rotations = value;
     }
     data.rotations = this.rotations.value;
@@ -241,7 +226,6 @@ function MyDialog() {
     this.saturationParam.setPrecision(2);
     this.saturationParam.setValue(1.0);
     this.saturationParam.onValueUpdated = function (value) {
-        //data.updataParams(value);
         data.saturation = value;
     }
     data.saturation = this.saturationParam.value;
@@ -255,7 +239,6 @@ function MyDialog() {
     this.gammaParam.setPrecision(2);
     this.gammaParam.setValue(1.0);
     this.gammaParam.onValueUpdated = function (value) {
-        //data.updataParams(value);
         data.gamma = value;
     }
     data.gamma = this.gammaParam.value;
