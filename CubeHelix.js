@@ -315,7 +315,8 @@ function MyDialog() {
     this.cancelButton.text = "Cancel";
     this.cancelButton.icon = this.scaledResource(":/icons/cancel.png");
     this.cancelButton.onClick = function () {
-        data.preview.forceClose();
+        if (data.preview != null)
+            data.preview.forceClose();
         this.dialog.cancel();
     }
 
